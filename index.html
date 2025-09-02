@@ -12,6 +12,11 @@
 
     <style>
         :root {
+            /* Stage size + title gap (you can tweak) */
+            --stage-w: min(1900px, 98vw);
+            --stage-h: clamp(420px, 68vh, 900px);
+            --title-gap: 6px;
+
             --bg: #0b1020;
             --ink: #e7ecff;
             --muted: #9fb0ff;
@@ -19,19 +24,19 @@
             --ring2: #93f7ff;
 
             --accent: #ffd54f;
-            /* yellow connectors */
             --accent2: #ff9d6b;
-            /* warm spark */
-
             --gear: #ffd54f;
 
-            /* Circle-4 segment colors */
+            /* Segment colours */
             --haz: #f39b3c;
-            /* Hazard ID (orange) */
+            /* Hazard ID (orange)  */
             --risk: #4aa3ff;
-            /* Risk Assessment (blue) */
+            /* Risk Assessment     */
             --manage: #23c3b1;
-            /* Risk Management (teal) */
+            /* Risk Management     */
+
+            /* Arrow band thickness (mask stroke width) */
+            --seg-thickness: 44;
         }
 
         html,
@@ -49,23 +54,21 @@
             place-items: center;
         }
 
-        /* Centered page title */
         .pageTitle {
             text-align: center;
             color: #e7ecff;
             font: 800 28px/1.2 ui-sans-serif, system-ui, Inter;
             letter-spacing: .1em;
-            margin: 20px 0 6px;
+            margin: 16px 0 var(--title-gap);
             text-transform: uppercase;
         }
 
         .stage {
-            width: min(1900px, 98vw);
-            aspect-ratio: 21/5;
-            /* matches 2100x500 proportions */
+            width: var(--stage-w);
+            height: var(--stage-h);
             border-radius: 20px;
             position: relative;
-            background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .00));
+            background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, 0));
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 30px 80px rgba(0, 0, 0, .45);
             overflow: visible;
         }
@@ -79,7 +82,7 @@
             letter-spacing: .08em;
             text-transform: uppercase;
             pointer-events: none;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .btn {
@@ -92,7 +95,7 @@
             padding: 8px 12px;
             border-radius: 10px;
             font-weight: 800;
-            cursor: pointer;
+            cursor: pointer
         }
 
         .btn:hover {
@@ -110,7 +113,7 @@
             font: 800 clamp(18px, 3vw, 28px)/1.1 ui-sans-serif, system-ui, Inter;
             letter-spacing: .08em;
             text-transform: uppercase;
-            fill: var(--ink);
+            fill: var(--ink)
         }
 
         .label.small {
@@ -128,7 +131,6 @@
             font: 600 12px/1 ui-sans-serif
         }
 
-        /* Circles 1–3 visuals */
         .shadow {
             fill: rgba(0, 0, 0, .35);
             filter: blur(18px)
@@ -157,7 +159,6 @@
             stroke-dasharray: 0 800
         }
 
-        /* Envelope */
         .env-body {
             fill: #ffd700;
             stroke: #b8860b;
@@ -184,7 +185,6 @@
             stroke-width: 1
         }
 
-        /* Ripples + sparks */
         .ripple {
             fill: none;
             stroke: var(--accent);
@@ -197,7 +197,6 @@
             opacity: 0
         }
 
-        /* Arrow guides */
         .flowGuide {
             fill: none;
             stroke: rgba(255, 213, 79, .18);
@@ -205,7 +204,6 @@
             stroke-linecap: round
         }
 
-        /* Moving arrow */
         .arrowHead {
             fill: var(--accent);
             filter: drop-shadow(0 2px 12px rgba(255, 213, 79, .45))
@@ -218,7 +216,6 @@
             opacity: .35
         }
 
-        /* Understand gear */
         .gear-body {
             fill: var(--gear);
             stroke: #caa400;
@@ -229,7 +226,6 @@
             fill: #0b1020
         }
 
-        /* Scope & Plan (Calendar) */
         .cal-frame {
             fill: #0f1a31;
             stroke: #4aa3ff;
@@ -267,37 +263,26 @@
             stroke-linejoin: round
         }
 
-        /* Big circle core (under arrows) */
         .coreBig {
             fill: #0c1327
         }
 
-        /* Circle-4 thick base segments */
+        /* Original thick arcs — now hidden (we reveal arrow bands instead) */
         .seg {
             fill: none;
-            stroke-width: 44;
+            stroke-width: var(--seg-thickness);
             stroke-linecap: round;
-            filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .18));
-        }
-
-        .seg-haz {
-            stroke: var(--haz)
-        }
-
-        .seg-risk {
-            stroke: var(--risk)
-        }
-
-        .seg-man {
-            stroke: var(--manage)
-        }
-
-        /* Arrow-line triangles placed along the arc */
-        .arrowTri {
             opacity: 0
         }
 
-        /* Labels along the outer paths (bigger) */
+        /* Groups of arrows that visually replace the arcs */
+        .arrowBand {
+            opacity: 0
+        }
+
+        /* we reveal via masks timed to the old dash */
+
+        /* Labels on outer paths */
         .segLabel {
             fill: #fff;
             font: 700 24px/1.2 ui-sans-serif;
@@ -310,9 +295,8 @@
             letter-spacing: .03em
         }
 
-        /* Center title inside circle 4 */
         .centerTitle {
-            fill: #ffffff;
+            fill: #fff;
             font: 800 26px/1.15 ui-sans-serif;
             letter-spacing: .06em;
             text-transform: uppercase;
@@ -322,37 +306,32 @@
             stroke-width: 3px;
         }
 
-        /* independent sub-text element (transformable) */
         .centerSub {
             font: 700 16px/1.25 ui-sans-serif;
             fill: var(--muted);
-            text-transform: none;
             letter-spacing: .045em;
             text-anchor: middle;
-            opacity: 0.95;
+            opacity: .95;
             transform-box: fill-box;
-            transform-origin: 50% 50%;
+            transform-origin: 50% 50%
         }
 
-        /* Curved labels inside the blue arc */
         .arcText {
             fill: #eaf2ff;
             font: 700 18px/1.2 ui-sans-serif;
             letter-spacing: .04em;
-            dominant-baseline: middle;
+            dominant-baseline: middle
         }
     </style>
 </head>
 
 <body>
-    <!-- Centered page title -->
-    <h1 class="pageTitle">RISK ASSEMENT AND ANALYSIS PROCESS</h1>
+    <h1 class="pageTitle">RISK ASSESSMENT AND ANALYSIS PROCESS</h1>
 
     <div class="stage">
         <div class="hud-title" id="hudTitle"></div>
         <button id="replay" class="btn" aria-label="Replay animation">↺ Replay</button>
 
-        <!-- xlink so textPath is robust across browsers -->
         <svg viewBox="0 0 2100 500" xmlns:xlink="http://www.w3.org/1999/xlink"
             aria-label="Received → Understand → Scope & Plan (Calendar)">
             <defs>
@@ -360,9 +339,20 @@
                     <stop offset="0%" stop-color="#6aa8ff" />
                     <stop offset="100%" stop-color="#93f7ff" />
                 </linearGradient>
+
+                <!-- Masks for arrow-bands (white stroke animates to reveal arrows) -->
+                <mask id="maskHaz">
+                    <path id="maskHazStroke" fill="none" stroke="white" stroke-linecap="round" />
+                </mask>
+                <mask id="maskRisk">
+                    <path id="maskRiskStroke" fill="none" stroke="white" stroke-linecap="round" />
+                </mask>
+                <mask id="maskMan">
+                    <path id="maskManStroke" fill="none" stroke="white" stroke-linecap="round" />
+                </mask>
             </defs>
 
-            <!-- ===== CIRCLE 1 @ (360,250) ===== -->
+            <!-- ===== CIRCLE 1 ===== -->
             <g id="circle1" transform="translate(360,250)">
                 <ellipse class="shadow" cx="0" cy="65" rx="120" ry="36"></ellipse>
                 <circle class="halo" r="112"></circle>
@@ -375,7 +365,6 @@
                 <circle class="ripple" id="rip3" r="102"></circle>
             </g>
 
-            <!-- Label under circle 1 -->
             <g id="rLabel" transform="translate(360,360)">
                 <g id="rLabelInner">
                     <text id="rMain" class="label tiny" text-anchor="middle" y="15">Received Requests</text>
@@ -383,7 +372,7 @@
                 </g>
             </g>
 
-            <!-- Envelope path + envelope -->
+            <!-- Envelope -->
             <path id="flyPath" d="M -220,250 C 60,210 180,240 300,250 S 340,250 360,250" fill="none"
                 stroke="rgba(147,247,255,.25)" stroke-width="2"></path>
             <g id="env" transform="translate(-220,250)">
@@ -403,14 +392,14 @@
                 <circle class="spark" r="2" cx="0" cy="0"></circle>
             </g>
 
-            <!-- ===== ARROW 1: circle1 -> circle2 (uniform gap) ===== -->
+            <!-- Arrows between circles -->
             <path id="flow1" class="flowGuide" d="M 456,250 L 768,250" />
             <g id="arrow1" opacity="0">
                 <line class="arrowShaft" x1="-30" y1="0" x2="0" y2="0"></line>
                 <polygon class="arrowHead" points="0,-10 24,0 0,10"></polygon>
             </g>
 
-            <!-- ===== CIRCLE 2 @ (860,250) ===== -->
+            <!-- ===== CIRCLE 2 ===== -->
             <g id="circle2" transform="translate(860,250)" opacity="0" scale="1">
                 <ellipse class="shadow" cx="0" cy="65" rx="110" ry="34"></ellipse>
                 <circle class="halo" r="106"></circle>
@@ -439,7 +428,6 @@
                 </g>
             </g>
 
-            <!-- Label under circle 2 -->
             <g id="uLabel" transform="translate(860,360)" opacity="0">
                 <g id="uLabelInner">
                     <text class="label small" text-anchor="middle">
@@ -450,14 +438,13 @@
                 </g>
             </g>
 
-            <!-- ===== ARROW 2: circle2 -> circle3 (uniform gap) ===== -->
             <path id="flow2" class="flowGuide" d="M 952,250 L 1274,250" />
             <g id="arrow2" opacity="0">
                 <line class="arrowShaft" x1="-30" y1="0" x2="0" y2="0"></line>
                 <polygon class="arrowHead" points="0,-10 24,0 0,10"></polygon>
             </g>
 
-            <!-- ===== CIRCLE 3 @ (1360,250) ===== -->
+            <!-- ===== CIRCLE 3 ===== -->
             <g id="circle3" transform="translate(1360,250)" opacity="0" scale="1">
                 <ellipse class="shadow" cx="0" cy="60" rx="96" ry="30"></ellipse>
                 <circle class="halo" r="98"></circle>
@@ -494,7 +481,6 @@
                 </g>
             </g>
 
-            <!-- Label under circle 3 -->
             <g id="sLabel" transform="translate(1360,360)" opacity="0">
                 <g id="sLabelInner">
                     <text class="label small" text-anchor="middle">
@@ -504,35 +490,33 @@
                 </g>
             </g>
 
-            <!-- ===== ARROW 3: circle3 -> circle4 (uniform gap) ===== -->
             <path id="flow3" class="flowGuide" d="M 1446,250 L 1688,250" />
             <g id="arrow3" opacity="0">
                 <line class="arrowShaft" x1="-30" y1="0" x2="0" y2="0"></line>
                 <polygon class="arrowHead" points="0,-10 24,0 0,10"></polygon>
             </g>
 
-            <!-- ===== CIRCLE 4 @ (1860,250) — arrow-lined arcs ===== -->
+            <!-- ===== CIRCLE 4 ===== -->
             <g id="circle4" transform="translate(1860,250)" opacity="0" scale="1">
                 <ellipse class="shadow" cx="0" cy="96" rx="180" ry="42"></ellipse>
                 <circle class="halo" r="182"></circle>
                 <circle class="coreBig" r="150"></circle>
 
-                <!-- Base thick arcs (their d gets rewritten by JS to start at leftmost) -->
-                <path id="segHaz" class="seg seg-haz" d="M 0,-172 A 172 172 0 0 1 149,86" />
-                <path id="segRisk" class="seg seg-risk" d="M 149,86 A 172 172 0 0 1 -149,86" />
-                <path id="segMan" class="seg seg-man" d="M -149,86 A 172 172 0 0 1 0,-172" />
+                <!-- Base paths define geometry; strokes hidden, but used for labels/masks -->
+                <path id="segHaz" class="seg" d="M 0,-172 A 172 172 0 0 1 149,86" />
+                <path id="segRisk" class="seg" d="M 149,86 A 172 172 0 0 1 -149,86" />
+                <path id="segMan" class="seg" d="M -149,86 A 172 172 0 0 1 0,-172" />
 
-                <!-- Arrow triangles placed along each segment -->
-                <g id="hazArrows"></g>
-                <g id="riskArrows"></g>
-                <g id="manArrows"></g>
+                <!-- Arrow bands that visually replace arcs (each masked by animated stroke) -->
+                <g id="hazBand" class="arrowBand" mask="url(#maskHaz)"></g>
+                <g id="riskBand" class="arrowBand" mask="url(#maskRisk)"></g>
+                <g id="manBand" class="arrowBand" mask="url(#maskMan)"></g>
 
-                <!-- OUTER label paths (rewritten by JS too) -->
+                <!-- OUTER label paths -->
                 <path id="segHazL" d="M 0,-206 A 206 206 0 0 1 179,103" fill="none" />
                 <path id="segRiskL" d="M 179,103 A 206 206 0 0 1 -179,103" fill="none" />
                 <path id="segManL" d="M -179,103 A 206 206 0 0 1 0,-206" fill="none" />
 
-                <!-- Labels ON THE ARCS -->
                 <text class="segLabel">
                     <textPath href="#segHazL" xlink:href="#segHazL" startOffset="50%" text-anchor="middle">Hazard ID
                     </textPath>
@@ -551,23 +535,22 @@
                     </textPath>
                 </text>
 
-                <!-- Inner arc for the four small labels inside the blue arc (rewritten by JS) -->
+                <!-- Inner arc for the four small labels inside the blue arc -->
                 <path id="riskInnerArc" d="M 139,80 A 160 160 0 0 1 -139,80" fill="none" />
-
                 <text class="arcText">
-                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="4%" dy="-8">Risk of Entry
+                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="4%" dy="-8"> Entry
                     </textPath>
                 </text>
                 <text class="arcText">
-                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="30%" dy="-8">Exposure
+                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="19%" dy="-8">Exposure
                     </textPath>
                 </text>
                 <text class="arcText">
-                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="56%" dy="-8">Establishment
+                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="45%" dy="-8">Establishment
                     </textPath>
                 </text>
                 <text class="arcText">
-                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="82%" dy="-8">Impact
+                    <textPath href="#riskInnerArc" xlink:href="#riskInnerArc" startOffset="83%" dy="-8">Impact
                     </textPath>
                 </text>
 
@@ -585,7 +568,7 @@
         gsap.registerPlugin(MotionPathPlugin);
         document.getElementById('hudTitle').textContent = document.title;
 
-        /* ========== NEW: Re-anchor circle-4 arcs so Hazard starts at the leftmost point (180°) ========== */
+        /* ---------- Geometry rotation so Hazard starts at leftmost (like before) ---------- */
         (function setCircle4ArcGeometry() {
             const segHaz = document.getElementById('segHaz');
             const segRisk = document.getElementById('segRisk');
@@ -595,44 +578,64 @@
             const segManL = document.getElementById('segManL');
             const riskInnerArc = document.getElementById('riskInnerArc');
 
-            // helpers
-            const toRad = deg => (deg % 360) * Math.PI / 180;
-            function pointOnCircle(r, deg) {
-                const a = toRad(deg);
-                const x = r * Math.cos(a);
-                const y = r * Math.sin(a); // SVG y+ downward (this matches our earlier angles)
-                return [x.toFixed(3), y.toFixed(3)];
-            }
-            // build a small arc (<=180°) sweeping clockwise (sweep-flag=1)
+            const toRad = d => (d % 360) * Math.PI / 180;
+            const pt = (r, d) => { const a = toRad(d); return [(r * Math.cos(a)).toFixed(3), (r * Math.sin(a)).toFixed(3)] };
             function arcPath(r, a1, a2) {
-                let start = a1 % 360, end = a2 % 360;
-                if (end <= start) end += 360; // allow wrap
-                const sweep = end - start;    // we’ll keep each at 120°
-                const largeArc = (sweep > 180) ? 1 : 0;
-                const [x1, y1] = pointOnCircle(r, start);
-                const [x2, y2] = pointOnCircle(r, end % 360);
-                return `M ${x1},${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2},${y2}`;
+                let s = a1 % 360, e = a2 % 360; if (e <= s) e += 360;
+                const sweep = e - s, large = (sweep > 180) ? 1 : 0;
+                const [x1, y1] = pt(r, s), [x2, y2] = pt(r, e % 360);
+                return `M ${x1},${y1} A ${r} ${r} 0 ${large} 1 ${x2},${y2}`;
             }
-
-            // geometry (each arc is 120°). Start Hazard at 180° (leftmost), then clockwise:
-            // Hazard: 180° → 300°, Risk: 300° → 60° (wrap), Management: 60° → 180°
+            /* 120° each: Hazard 180→300, Risk 300→60, Manage 60→180 */
             segHaz.setAttribute('d', arcPath(172, 180, 300));
             segRisk.setAttribute('d', arcPath(172, 300, 60));
             segMan.setAttribute('d', arcPath(172, 60, 180));
 
-            // outer label paths at radius 206 (mirror the same angles)
             segHazL.setAttribute('d', arcPath(206, 180, 300));
             segRiskL.setAttribute('d', arcPath(206, 300, 60));
             segManL.setAttribute('d', arcPath(206, 60, 180));
 
-            // inner risk arc (for Entry/Exposure/Establishment/Impact) at radius 160
             riskInnerArc.setAttribute('d', arcPath(160, 300, 60));
         })();
-        /* ============================ end new geometry block ============================ */
 
-        const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+        /* ---------- Build arrow bands + animated masks ---------- */
+        const ARROW_SPACING = 24;   // denser = smaller number
+        const ARROW_SIZE = 28;   // bigger = thicker chevrons (visual)
+        function buildArrowBand(pathEl, bandGroup, color, spacing = ARROW_SPACING, size = ARROW_SIZE) {
+            while (bandGroup.firstChild) bandGroup.removeChild(bandGroup.firstChild);
+            const total = pathEl.getTotalLength();
+            const start = 10, endStop = total - 10;
+            for (let d = start; d < endStop; d += spacing) {
+                const p = pathEl.getPointAtLength(d);
+                const p2 = pathEl.getPointAtLength(Math.min(endStop, d + 0.6));
+                const ang = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI;
 
-        /* Refs (existing flow) */
+                const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const h = size, w = size * 1.15;
+                tri.setAttribute('points', `0,${-h / 2} ${w},0 0,${h / 2}`);
+                tri.setAttribute('fill', color);
+                tri.setAttribute('opacity', 0.98);
+                tri.setAttribute('transform', `translate(${p.x},${p.y}) rotate(${ang})`);
+                bandGroup.appendChild(tri);
+            }
+        }
+
+        function setupSegmentMask(segPathId, maskStrokeId) {
+            const segPath = document.getElementById(segPathId);
+            const mStroke = document.getElementById(maskStrokeId);
+            const thick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--seg-thickness')) || 44;
+            mStroke.setAttribute('d', segPath.getAttribute('d'));
+            mStroke.setAttribute('stroke-width', thick);
+            return mStroke;
+        }
+
+        function resetDash(el) {
+            const L = el.getTotalLength();
+            gsap.set(el, { strokeDasharray: `${L} ${L}`, strokeDashoffset: L });
+            return L;
+        }
+
+        /* ---------- Normal timeline + arrow-band draw via mask strokes ---------- */
         const flyPath = document.getElementById('flyPath');
         const env = document.getElementById('env');
         const flap = document.getElementById('flap');
@@ -654,46 +657,32 @@
         const calCheck = document.getElementById('cal-check');
         const sLabel = document.getElementById('sLabel');
 
-        /* Big circle refs */
         const circle4 = document.getElementById('circle4');
         const segHaz = document.getElementById('segHaz');
         const segRisk = document.getElementById('segRisk');
         const segMan = document.getElementById('segMan');
 
-        const hazArrows = document.getElementById('hazArrows');
-        const riskArrows = document.getElementById('riskArrows');
-        const manArrows = document.getElementById('manArrows');
+        const hazBand = document.getElementById('hazBand');
+        const riskBand = document.getElementById('riskBand');
+        const manBand = document.getElementById('manBand');
 
-        /* Utilities */
+        const hazMaskStroke = setupSegmentMask('segHaz', 'maskHazStroke');
+        const riskMaskStroke = setupSegmentMask('segRisk', 'maskRiskStroke');
+        const manMaskStroke = setupSegmentMask('segMan', 'maskManStroke');
+
         function setupTypingMask(innerGroupId, clipId) {
             const svg = document.querySelector('svg');
             let defs = svg.querySelector('defs');
-            if (!defs) {
-                defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                svg.insertBefore(defs, svg.firstChild);
-            }
+            if (!defs) { defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs'); svg.insertBefore(defs, svg.firstChild); }
             const target = document.getElementById(innerGroupId);
             if (!target) return { rect: null, width: 0 };
             const bb = target.getBBox();
 
             let clip = document.getElementById(clipId);
-            if (!clip) {
-                clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-                clip.setAttribute('id', clipId);
-                clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
-                defs.appendChild(clip);
-            }
+            if (!clip) { clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'); clip.setAttribute('id', clipId); clip.setAttribute('clipPathUnits', 'userSpaceOnUse'); defs.appendChild(clip); }
             let rect = document.getElementById(`${clipId}Rect`);
-            if (!rect) {
-                rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('id', `${clipId}Rect`);
-                clip.appendChild(rect);
-            }
-            rect.setAttribute('x', bb.x);
-            rect.setAttribute('y', bb.y);
-            rect.setAttribute('width', 0);
-            rect.setAttribute('height', bb.height);
-
+            if (!rect) { rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); rect.setAttribute('id', `${clipId}Rect`); clip.appendChild(rect); }
+            rect.setAttribute('x', bb.x); rect.setAttribute('y', bb.y); rect.setAttribute('width', 0); rect.setAttribute('height', bb.height);
             target.setAttribute('clip-path', `url(#${clipId})`);
             return { rect, width: bb.width };
         }
@@ -703,42 +692,24 @@
             document.querySelectorAll('#sparks .spark').forEach((s, i) => {
                 const dist = 36 + Math.random() * 18;
                 const a = (angles[i] + (Math.random() * 12 - 6)) * Math.PI / 180;
-                gsap.fromTo(s, { opacity: 0, x: 0, y: 0, scale: 0.4 },
-                    {
-                        opacity: 1, x: Math.cos(a) * dist, y: Math.sin(a) * dist, scale: 1, duration: .28, ease: "power2.out",
-                        onComplete: () => gsap.to(s, { opacity: 0, scale: 0.2, duration: .35, ease: "power1.in" })
-                    });
+                gsap.fromTo(s, { opacity: 0, x: 0, y: 0, scale: 0.4 }, {
+                    opacity: 1, x: Math.cos(a) * dist, y: Math.sin(a) * dist, scale: 1, duration: .28, ease: "power2.out",
+                    onComplete: () => gsap.to(s, { opacity: 0, scale: 0.2, duration: .35, ease: "power1.in" })
+                });
             });
         }
 
-        function resetDash(seg) {
-            const L = seg.getTotalLength();
-            gsap.set(seg, { strokeDasharray: `${L} ${L}`, strokeDashoffset: L });
-            return L;
+        function buildAllBands() {
+            const css = getComputedStyle(document.documentElement);
+            buildArrowBand(segHaz, hazBand, css.getPropertyValue('--haz').trim());
+            buildArrowBand(segRisk, riskBand, css.getPropertyValue('--risk').trim());
+            buildArrowBand(segMan, manBand, css.getPropertyValue('--manage').trim());
         }
-
-        /* Build arrow-line triangles along a path */
-        function buildArrowLine(pathEl, targetGroup, color, spacing = 36, size = 12) {
-            while (targetGroup.firstChild) targetGroup.removeChild(targetGroup.firstChild);
-            const total = pathEl.getTotalLength();
-            const start = 8;
-            for (let d = start; d < total - start; d += spacing) {
-                const p = pathEl.getPointAtLength(d);
-                const p2 = pathEl.getPointAtLength(Math.min(total, d + 0.5));
-                const ang = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI;
-
-                const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                const h = size, w = size * 1.2;
-                tri.setAttribute('points', `0,${-h / 2} ${w},0 0,${h / 2}`);
-                tri.setAttribute('fill', color);
-                tri.setAttribute('class', 'arrowTri');
-                tri.setAttribute('transform', `translate(${p.x},${p.y}) rotate(${ang})`);
-                targetGroup.appendChild(tri);
-            }
-        }
+        buildAllBands();
 
         function replay() {
             const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+
             // Resets
             gsap.set(env, { x: 0, y: 0, rotation: 0, transformOrigin: "50% 50%" });
             gsap.set(flap, { rotation: 0 });
@@ -747,7 +718,6 @@
             gsap.set('#rip2', { opacity: 0, scale: 1 });
             gsap.set('#rip3', { opacity: 0, scale: 1 });
             gsap.set(dash1, { attr: { 'stroke-dasharray': "0 800" } });
-
             const rMask = setupTypingMask('rLabelInner', 'clipR');
             const uMask = setupTypingMask('uLabelInner', 'clipU');
             const sMask = setupTypingMask('sLabelInner', 'clipS');
@@ -765,147 +735,115 @@
             gsap.set(calendar, { scale: 1, transformOrigin: "50% 50%" });
 
             gsap.set(circle4, { opacity: 0, scale: 0.96, transformOrigin: "50% 50%" });
-
             gsap.set([arrow1, arrow2, arrow3], { opacity: 0 });
 
-            // Precompute lengths & reset dash for big segments
-            const Lh = resetDash(segHaz);
-            const Lr = resetDash(segRisk);
-            const Lm = resetDash(segMan);
-
-            // Build arrow-line triangles for each arc
-            const cs = getComputedStyle(document.documentElement);
-            buildArrowLine(segHaz, hazArrows, cs.getPropertyValue('--haz').trim(), 36, 12);
-            buildArrowLine(segRisk, riskArrows, cs.getPropertyValue('--risk').trim(), 36, 12);
-            buildArrowLine(segMan, manArrows, cs.getPropertyValue('--manage').trim(), 36, 12);
-
-            // Start hidden
-            gsap.set([hazArrows, riskArrows, manArrows], { opacity: 0 });
+            // Reset the animated mask strokes and show bands
+            const Lh = resetDash(hazMaskStroke);
+            const Lr = resetDash(riskMaskStroke);
+            const Lm = resetDash(manMaskStroke);
+            gsap.set([hazBand, riskBand, manBand], { opacity: 1 }); // visible, but revealed by masks
 
             tl
-                /* 1) Circle 1 anticipation */
                 .to(dash1, { duration: 1.2, attr: { 'stroke-dasharray': "800 0" } }, 0)
-
-                /* 2) Envelope flies in */
-                .fromTo(env, {},
-                    {
-                        duration: 2.2,
-                        motionPath: { path: "#flyPath", align: "#flyPath", autoRotate: true, alignOrigin: [0.5, 0.5] },
-                        ease: "power2.inOut"
-                    }, 0.15)
-
-                /* 3) Impact pulse + ripples + sparks */
+                .fromTo(env, {}, {
+                    duration: 2.2,
+                    motionPath: { path: "#flyPath", align: "#flyPath", autoRotate: true, alignOrigin: [0.5, 0.5] },
+                    ease: "power2.inOut"
+                }, 0.15)
                 .add(() => {
                     sparkBurst();
                     gsap.fromTo('#circle1', { scale: 1 }, { scale: 1.04, yoyo: true, repeat: 1, duration: .2, transformOrigin: "360px 250px" });
                     ['#rip1', '#rip2', '#rip3'].forEach((id, i) => {
-                        gsap.fromTo(id, { opacity: 0, scale: 1 },
-                            {
-                                opacity: .9, scale: 1.2 + i * 0.12, duration: .28 + i * 0.06, ease: "power2.out",
-                                onComplete: () => gsap.to(id, { opacity: 0, duration: .28, ease: "power1.in" })
-                            });
+                        gsap.fromTo(id, { opacity: 0, scale: 1 }, {
+                            opacity: .9, scale: 1.2 + i * 0.12, duration: .28 + i * 0.06, ease: "power2.out",
+                            onComplete: () => gsap.to(id, { opacity: 0, duration: .28, ease: "power1.in" })
+                        });
                     });
                 }, 2.4)
-
-                /* 4) Open envelope + reveal paper */
                 .to(flap, { duration: .55, rotation: -160, ease: "power2.inOut" }, 2.5)
                 .to(paper, { duration: .5, opacity: 1, y: -8, ease: "power2.out" }, 2.58)
-
-                /* 4.5) Type-in "Received Requests" */
                 .to('#clipRRect', { duration: .9, attr: { width: rMask.width }, ease: "power1.inOut" }, 2.7)
 
-                /* 5) Arrow 1 to Understand */
                 .set(arrow1, { opacity: 1 }, 3.2)
                 .to(arrow1, {
                     duration: 1.3, ease: "power1.inOut",
                     motionPath: { path: "#flow1", align: "#flow1", autoRotate: true, alignOrigin: [0.5, 0.5] }
                 }, 3.2)
 
-                /* 6) Understand */
                 .to(circle2, { duration: .5, opacity: 1, scale: 1, ease: "back.out(1.6)" }, 4.8)
                 .add(() => { gsap.to(gear, { rotation: 360, duration: 6, ease: "none", repeat: -1, transformOrigin: "50% 50%" }); }, 5.25)
                 .to('#uLabel', { duration: .2, opacity: 1, ease: "none" }, 5.35)
                 .to('#clipURect', { duration: 1.0, attr: { width: uMask.width }, ease: "power1.inOut" }, 5.4)
 
-                /* 7) Arrow 2 to Scope & Plan */
                 .set(arrow2, { opacity: 1 }, 6.6)
                 .to(arrow2, {
                     duration: 1.5, ease: "power1.inOut",
                     motionPath: { path: "#flow2", align: "#flow2", autoRotate: true, alignOrigin: [0.5, 0.5] }
                 }, 6.6)
 
-                /* 8) Scope & Plan + heartbeat */
                 .to(circle3, { duration: .5, opacity: 1, scale: 1, ease: "back.out(1.6)" }, 8.1)
                 .to(calSheet, { duration: .6, y: 0, rotation: 0, ease: "back.out(1.6)" }, 8.6)
                 .add(() => {
                     gsap.killTweensOf(calendar);
                     const hb = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
-                    hb.to(calendar, { scale: 1.06, duration: 0.12, ease: "power2.out" })
-                        .to(calendar, { scale: 1.00, duration: 0.12, ease: "power2.in" })
-                        .to(calendar, { scale: 1.05, duration: 0.10, ease: "power2.out" }, "+=0.10")
-                        .to(calendar, { scale: 1.00, duration: 0.14, ease: "power2.in" });
+                    hb.to(calendar, { scale: 1.06, duration: .12, ease: "power2.out" })
+                        .to(calendar, { scale: 1.00, duration: .12, ease: "power2.in" })
+                        .to(calendar, { scale: 1.05, duration: .10, ease: "power2.out" }, "+=.10")
+                        .to(calendar, { scale: 1.00, duration: .14, ease: "power2.in" });
                 }, 9.0)
                 .to(calHL, { duration: .25, opacity: 1, scale: 1.05, ease: "power2.out", yoyo: true, repeat: 1 }, 9.3)
                 .to(calCheck, { duration: .45, strokeDashoffset: 0, opacity: 1, ease: "power2.out" }, 9.65)
                 .to('#sLabel', { duration: .2, opacity: 1, ease: "none" }, 9.8)
                 .to('#clipSRect', { duration: 1.0, attr: { width: sMask.width }, ease: "power1.inOut" }, 9.85)
 
-                /* 9) Arrow 3 to Big Circle */
                 .set(arrow3, { opacity: 1 }, 10.3)
                 .to(arrow3, {
                     duration: 1.0, ease: "power1.inOut",
                     motionPath: { path: "#flow3", align: "#flow3", autoRotate: true, alignOrigin: [0.5, 0.5] }
                 }, 10.3)
 
-                /* 10) Big circle reveal */
                 .to('#circle4', { duration: .6, opacity: 1, scale: 1, ease: "back.out(1.4)" }, 11.2)
 
-                /* 10.5) Pulsing the center sub-text */
                 .add(() => {
                     gsap.killTweensOf('#centerSub');
                     const pulse = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
-                    pulse
-                        .to('#centerSub', { scale: 1.06, opacity: 1, duration: 0.18, ease: "power2.out" })
-                        .to('#centerSub', { scale: 1.00, opacity: 0.92, duration: 0.18, ease: "power2.in" })
-                        .to('#centerSub', { scale: 1.05, duration: 0.14, ease: "power2.out" }, "+=0.12")
-                        .to('#centerSub', { scale: 1.00, duration: 0.20, ease: "power2.in" });
+                    pulse.to('#centerSub', { scale: 1.06, opacity: 1, duration: .18, ease: "power2.out" })
+                        .to('#centerSub', { scale: 1.00, opacity: .92, duration: .18, ease: "power2.in" })
+                        .to('#centerSub', { scale: 1.05, duration: .14, ease: "power2.out" }, "+=.12")
+                        .to('#centerSub', { scale: 1.00, duration: .20, ease: "power2.in" });
                 }, 11.9)
 
-                /* 11) INTRO SEQUENCE (once): draw Hazard -> Risk -> Management + fade in arrow-lines */
-                .fromTo(segHaz, { strokeDashoffset: segHaz.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 11.6)
-                .to(hazArrows, { duration: .3, opacity: 1 }, 12.1)
-                .fromTo(segRisk, { strokeDashoffset: segRisk.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 12.2)
-                .to(riskArrows, { duration: .3, opacity: 1 }, 12.7)
-                .fromTo(segMan, { strokeDashoffset: segMan.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 12.8)
-                .to(manArrows, { duration: .3, opacity: 1 }, 13.25)
+                /* Draw-on sequence now animates MASK strokes (revealing arrow bands) */
+                .fromTo(hazMaskStroke, { strokeDashoffset: hazMaskStroke.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 11.6)
+                .fromTo(riskMaskStroke, { strokeDashoffset: riskMaskStroke.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 12.2)
+                .fromTo(manMaskStroke, { strokeDashoffset: manMaskStroke.getTotalLength() }, { duration: .65, strokeDashoffset: 0, ease: "power2.out" }, 12.8)
 
-                /* 12) LOOPING SEQUENCE: Hazard -> Risk -> Management */
+                /* Looping sequence: reset & redraw masks to keep the motion rhythm */
                 .add(() => {
-                    const Lh = segHaz.getTotalLength();
-                    const Lr = segRisk.getTotalLength();
-                    const Lm = segMan.getTotalLength();
-
                     const loop = gsap.timeline({ repeat: -1, defaults: { ease: "none" } });
-
-                    // Reset at the start of each cycle
                     loop.add(() => {
-                        gsap.set(segHaz, { strokeDasharray: `${Lh} ${Lh}`, strokeDashoffset: Lh });
-                        gsap.set(segRisk, { strokeDasharray: `${Lr} ${Lr}`, strokeDashoffset: Lr });
-                        gsap.set(segMan, { strokeDasharray: `${Lm} ${Lm}`, strokeDashoffset: Lm });
-                        gsap.set([hazArrows, riskArrows, manArrows], { opacity: 0 });
+                        const Lh = hazMaskStroke.getTotalLength();
+                        const Lr = riskMaskStroke.getTotalLength();
+                        const Lm = manMaskStroke.getTotalLength();
+                        gsap.set(hazMaskStroke, { strokeDasharray: `${Lh} ${Lh}`, strokeDashoffset: Lh });
+                        gsap.set(riskMaskStroke, { strokeDasharray: `${Lr} ${Lr}`, strokeDashoffset: Lr });
+                        gsap.set(manMaskStroke, { strokeDasharray: `${Lm} ${Lm}`, strokeDashoffset: Lm });
                     });
-
-                    loop
-                        .to(segHaz, { strokeDashoffset: 0, duration: 1.5 })
-                        .to(hazArrows, { opacity: 1, duration: 0.25 }, "<+0.8")
-
-                        .to(segRisk, { strokeDashoffset: 0, duration: 1.5 })
-                        .to(riskArrows, { opacity: 1, duration: 0.25 }, "<+0.8")
-
-                        .to(segMan, { strokeDashoffset: 0, duration: 1.5 })
-                        .to(manArrows, { opacity: 1, duration: 0.25 }, "<+0.8");
+                    loop.to(hazMaskStroke, { strokeDashoffset: 0, duration: 1.5 })
+                        .to(riskMaskStroke, { strokeDashoffset: 0, duration: 1.5 })
+                        .to(manMaskStroke, { strokeDashoffset: 0, duration: 1.5 });
                 }, 13.7);
         }
+
+        // Build bands once on load; ensure masks have the right stroke width
+        function refreshMaskWidths() {
+            const thick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--seg-thickness')) || 44;
+            ['maskHazStroke', 'maskRiskStroke', 'maskManStroke'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.setAttribute('stroke-width', thick);
+            });
+        }
+        refreshMaskWidths();
 
         replay();
         document.getElementById('replay').addEventListener('click', replay);
